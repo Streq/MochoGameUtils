@@ -8,15 +8,8 @@
 #include <memory>
 #include <cstdint>
 #include <cfloat>
-#include <SFML/Graphics/RenderWindow.hpp>
-#include <SFML/System/Clock.hpp>
 namespace mch{
 	constexpr float epsilon = 1e-5;
-
-	using RenderWindow = sf::RenderWindow;
-	using Vec2 = sf::Vector2f;
-	using Clock = sf::Clock;
-	using Time = sf::Time;
 
 	using int8 = std::int8_t;
 	using int16 = std::int16_t;

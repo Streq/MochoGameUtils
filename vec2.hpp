@@ -6,7 +6,10 @@
 
 
 namespace mch{
+using Vec2 = sf::Vector2f;
+
 namespace vec{
+
 
 inline float dot(const Vec2& a, const Vec2& b){
 	return a.x*b.x + a.y*b.y;
@@ -64,7 +67,7 @@ struct Intersection{
  *  or by multiplying s by u and adding it to q
  * */
 
-Intersection findIntersection
+inline Intersection findIntersection
 ( const Vec2& p
 , const Vec2& r
 , const Vec2& q
