@@ -7,6 +7,8 @@
 
 namespace mch{
 using Vec2 = sf::Vector2f;
+using Vec2i= sf::Vector2i;
+using Vec2u= sf::Vector2u;
 
 namespace vec{
 
@@ -54,43 +56,6 @@ inline Vec2 fromAngleinRads(float rads){
 	return Vec2(cos(rads),sin(rads));
 }
 
-struct Intersection{
-	bool exists;
-	float t,u;
-};
-
-/* Find an intersection between segments p to (p+r) and q to (q+s).
- * The boolean exists determines whether there's a certain (single)
- * 	point of intersection.
- * You can calculate the exact point of intersection
- *  by multiplying r by t and adding it to p
- *  or by multiplying s by u and adding it to q
- * */
-
-inline Intersection findIntersection
-( const Vec2& p
-, const Vec2& r
-, const Vec2& q
-, const Vec2& s
-){
-	//t = (q − p) x s / (r x s)
-	//u = (q − p) x r / (r x s)
-
-	//hay interseccion si r x s != 0 and 0 <= t <= 1 and 0 <= u <= 1
-
-	Intersection i;
-	i.exists = false;
-	auto q_min_p = q-p;
-	auto cross_r_s = cross(r,s);
-	if(!cross_r_s)return i;
-	i.t = cross(q_min_p, s) / cross_r_s;
-	i.u = cross(q_min_p, r) / cross_r_s;
-
-	i.exists = 0.f <= i.t && i.t <= 1.f
-			&& 0.f <= i.u && i.u <= 1.f;
-	return i;
-
-}
 
 
 }
