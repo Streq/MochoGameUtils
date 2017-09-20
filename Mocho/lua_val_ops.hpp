@@ -1,7 +1,7 @@
 
 #pragma once
 #include<lua.hpp>
-
+#include"Mocho/definitions.hpp"
 namespace mch{
 namespace lua{
 	template <typename T>
@@ -62,29 +62,45 @@ namespace lua{
 	};
 
 	template<>
-	struct value<long long>{
-		using ops = integer_ops<long long>;
+	struct value<int64>{
+		using ops = integer_ops<int64>;
 	};
 	template<>
-	struct value<long>{
-		using ops = integer_ops<long>;
+	struct value<int32>{
+		using ops = integer_ops<int32>;
 	};
 	template<>
-	struct value<int>{
-		using ops = integer_ops<int>;
+	struct value<int16>{
+		using ops = integer_ops<int16>;
 	};
 	template<>
-	struct value<char>{
-		using ops = integer_ops<char>;
+	struct value<int8>{
+		using ops = integer_ops<int8>;
+	};
+	template<>
+	struct value<uint64>{
+		using ops = integer_ops<uint64>;
+	};
+	template<>
+	struct value<uint32>{
+		using ops = integer_ops<uint32>;
+	};
+	template<>
+	struct value<uint16>{
+		using ops = integer_ops<uint16>;
+	};
+	template<>
+	struct value<uint8>{
+		using ops = integer_ops<uint8>;
 	};
 
 	template<>
-	struct value<double>{
-		using ops = number_ops<float>;
+	struct value<float64>{
+		using ops = number_ops<float64>;
 	};
 	template<>
-	struct value<float>{
-		using ops = number_ops<float>;
+	struct value<float32>{
+		using ops = number_ops<float32>;
 	};
 
 	template<>

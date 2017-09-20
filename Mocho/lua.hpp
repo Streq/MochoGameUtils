@@ -10,6 +10,8 @@
 #include <lua.hpp>
 #include <string>
 #include "lua_val_ops.hpp"
+#include <algorithm>
+
 
 #define EXPAND_BEGIN {int expansion[] {0,(
 #define EXPAND_END , 0)...};}
@@ -20,54 +22,75 @@ namespace mch{
 namespace lua{
 struct Script{
 	public:
-		Script(){
-			luaState = luaL_newstate();
+			Script();
+			~Script();
+		int loadFromBuffer(const std::string& buff);
+		int loadFromFile(const std::string& file);
+
+		int doChunk();
+		int doFile(const std::string& file);
+		int doBuffer(const std::string& buffer);
+
+		void registerFunction(const std::string& name, lua_CFunction function);
+
+		template<typename T>
+		T getValue(int index){
+			return value<T>::get(luaState,index);
 		}
-		~Script(){
-			lua_close(luaState);
-		}
-		int loadFromBuffer(const std::string& buff){
-			int ret = luaL_loadbuffer(luaState,buff.c_str(),buff.length(),nullptr);
-			if(ret){
-				printf("error loading chunk from buffer:\n%s\n%s\n",
-						buff.c_str(), lua_tostring(luaState, -1));
+
+		template<typename T>
+		int getByFullName(const std::string& fullname, T& ret){
+
+			size_t begin = 0;
+			size_t end = fullname.find('.');
+			size_t stack = 0;
+			lua_getglobal(luaState,fullname.substr(begin,end).c_str());
+			++stack;
+			if(lua_isnoneornil(luaState,-1)){
+				lua_pop(luaState,stack);
+				return -1;
+			};
+
+			while(end != std::string::npos){
+
+				begin = end+1;
+				end = fullname.find('.',begin);
+				lua_getfield(luaState, -1
+					,fullname.substr(begin,end-begin).c_str());
+				++stack;
+				if(lua_isnoneornil(luaState,-1)){
+					lua_pop(luaState,stack);
+					return -1;
+				};
 			}
-			return ret;
-		};
-		int loadFromFile(const std::string& file){
-			int ret = luaL_loadfile(luaState,file.c_str());
-			if(ret){
-				printf("error loading chunk from file %s:%s\n",
-						file.c_str(), lua_tostring(luaState, -1));
-			}
-			return ret;
-		};
-		int doChunk(){
-			int ret = function<>::call<>(*this);
-			if(ret){
-				printf("error running chunk:\n%s\n",
-						lua_tostring(luaState, -1));
-			}
-			return ret;
+
+			ret = value<T>::ops::get(luaState,-1);
+
+			lua_pop(luaState,stack);
 
 		}
-		int doFile(const std::string& file){
-			int ret=loadFromFile(file);
-			if(!ret)return doChunk();
-			return ret;
-		};
-		int doBuffer(const std::string& buffer){
-			int ret = loadFromBuffer(buffer);
-			if(!ret)return doChunk();
-			return ret;
+
+		void getField(const std::string& name);
+
+		void getGlobal(const std::string& name);
+
+		void pop(int n);
+
+		template<typename T>
+		void getAndPop(T& ret){
+			ret=value<T>::ops::get(luaState, -1);
+			lua_pop(luaState, 1);
 		};
 
-		void registerFunction(const std::string& name, lua_CFunction function){
-			lua_register(luaState,name.c_str(),function);
+		template<typename T>
+		void push(const T& val){
+			value<T>::ops::push(luaState,val);
 		}
+		lua_State* luaState;
 
 
-		template <typename... Args> struct function{
+		template <typename... Args>
+		struct function{
 			template <typename... Ret>
 			static int call(Script& script, const char* name, Args... ArgTypes, Ret&... RetTypes){
 				printf("calling function %s, with %u arguments and %u return fields\n"
@@ -98,7 +121,7 @@ struct Script{
 				}
 
 				EXPAND_BEGIN
-					script.get_and_pop(RetTypes)
+					script.getAndPop(RetTypes)
 				EXPAND_END
 
 				return ret;
@@ -106,8 +129,10 @@ struct Script{
 
 		};
 
-		template<class... Args>struct cfunction{
-			template<class Ret> struct ret{
+		template<class... Args>
+		struct cfunction{
+			template<class Ret>
+			struct ret{
 				template<Ret (*F)(Args...)>
 				static int function(lua_State* state){
 					int i = 0;
@@ -132,17 +157,6 @@ struct Script{
 
 	private:
 
-		template<typename T>
-		void get_and_pop(T& ret){
-			ret=value<T>::ops::get(luaState, -1);
-			lua_pop(luaState, 1);
-		};
-
-		template<typename T>
-		void push(const T& val){
-			value<T>::ops::push(luaState,val);
-		}
-		lua_State* luaState;
 
 
 };
