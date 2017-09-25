@@ -7,14 +7,22 @@
 
 #pragma once
 #include <vector>
-#include<memory>
+#include <memory>
+namespace sf{
+class RenderTarget;
+class RenderStates;
+class Event;
+}
+
 namespace mch {
 struct AppState;
-
+class AppContext;
 
 class AppStack {
 	public:
 		using StatePtr = std::unique_ptr<AppState>;
+		void setContext(AppContext& ctx);
+
 
 		void update();
 		void draw(sf::RenderTarget& target, sf::RenderStates states)const;
@@ -30,10 +38,13 @@ class AppStack {
 		void pushRequest(Action a, StatePtr ptr = nullptr);
 		void applyChanges();
 
-	private:
+
 		void pushState(StatePtr state);
 		void clear();
 		StatePtr popState();
+
+
+	private:
 
 		std::vector<StatePtr> stack;
 
@@ -41,6 +52,7 @@ class AppStack {
 
 		std::vector<Request> requests;
 
+		AppContext* ctx;
 };
 
 } /* namespace mch */
