@@ -7,17 +7,18 @@
 
 #include "SpriteBatch.hpp"
 
+#include<SFML/System/Vector2.hpp>
+
+#include<SFML/Graphics/RenderTarget.hpp>
 #include<SFML/Graphics/Sprite.hpp>
 #include<SFML/Graphics/Texture.hpp>
 #include<SFML/Graphics/Transform.hpp>
-#include<SFML/System/Vector2.hpp>
-
+#include<SFML/Graphics/PrimitiveType.hpp>
 namespace mch {
 
-} /* namespace mch */
 
-mch::SpriteBatch::SpriteBatch
-		( sf::RenderTexture& texture
+SpriteBatch::SpriteBatch
+		( const sf::Texture& texture
 		, int reserve
 		)
 		: array(sf::PrimitiveType::TrianglesStrip,reserve*6-2)
@@ -25,11 +26,11 @@ mch::SpriteBatch::SpriteBatch
 {
 }
 
-void mch::SpriteBatch::setTexture(sf::Texture& texture) {
+void SpriteBatch::setTexture(sf::Texture& texture) {
 	this->texture=&texture;
 }
 
-void mch::SpriteBatch::addSprite(const sf::Sprite& sprite) {
+void SpriteBatch::addSprite(const sf::Sprite& sprite) {
 	addSprite
 		( sprite.getTextureRect()
 		, sprite.getTransform()
@@ -37,12 +38,12 @@ void mch::SpriteBatch::addSprite(const sf::Sprite& sprite) {
 
 }
 
-mch::SpriteBatch::SpriteBatch()
+SpriteBatch::SpriteBatch()
 	: array(sf::PrimitiveType::TrianglesStrip)
 	, texture(nullptr)
 {}
 
-void mch::SpriteBatch::addSprite(
+void SpriteBatch::addSprite(
 		const sf::IntRect& texRect,
 		const sf::Transform& transform,
 		const sf::Color& color) {
@@ -79,14 +80,10 @@ void mch::SpriteBatch::addSprite(
 	*(init+5)=*(init+4);
 }
 
-void mch::SpriteBatch::toVertexArray(
-		const sf::Sprite& sprite,
-		sf::Vertex* vert) {
-}
-
-void mch::SpriteBatch::draw(
+void SpriteBatch::draw(
 		sf::RenderTarget& target,
 		sf::RenderStates states) const {
 	states.texture = texture;
 	target.draw(array,states);
 }
+} /* namespace mch */

@@ -9,8 +9,8 @@
 
 #include <lua.hpp>
 #include <string>
-#include "lua_val_ops.hpp"
 #include <algorithm>
+#include "Mocho/Lua/lua_val_ops.hpp"
 
 
 #define EXPAND_BEGIN {int expansion[] {0,(

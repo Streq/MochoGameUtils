@@ -7,16 +7,20 @@
 
 #pragma once
 #include <SFML/Graphics/Drawable.hpp>
+#include <SFML/Graphics/Color.hpp>
+#include <SFML/Graphics/Transform.hpp>
+#include <SFML/Graphics/Rect.hpp>
+#include <SFML/Graphics/VertexArray.hpp>
 namespace sf{
 	class Sprite;
 	class Texture;
 }
 namespace mch {
 
-class SpriteBatch : sf::Drawable{
+class SpriteBatch : public sf::Drawable {
 	public:
 		SpriteBatch();
-		SpriteBatch(sf::RenderTexture& texture, int reserve = 1);
+		SpriteBatch(const sf::Texture& texture, int reserve = 1);
 
 		void setTexture(sf::Texture& texture);
 		void addSprite(const sf::Sprite& sprite);
@@ -29,10 +33,7 @@ class SpriteBatch : sf::Drawable{
 	private:
 		sf::VertexArray array;
 		const sf::Texture* texture;
-	private:
-		//utility functions
-		static void toVertexArray(const sf::Sprite& sprite, sf::Vertex* vert);
-		void allocateSprite();
+
 };
 
 } /* namespace mch */

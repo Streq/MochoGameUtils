@@ -23,10 +23,10 @@ struct Intersection{
  * */
 
 inline Intersection findIntersection
-( const Vec2& p
-, const Vec2& r
-, const Vec2& q
-, const Vec2& s
+( const Vec2f& p
+, const Vec2f& r
+, const Vec2f& q
+, const Vec2f& s
 ){
 	//t = (q − p) x s / (r x s)
 	//u = (q − p) x r / (r x s)
@@ -48,8 +48,8 @@ inline Intersection findIntersection
 }
 
 struct AABB{
-	Vec2 topleft;
-	Vec2 size;
+	Vec2f topleft;
+	Vec2f size;
 };
 
 inline bool collisionAABB(const AABB& a, const AABB& b){
@@ -60,7 +60,7 @@ inline bool collisionAABB(const AABB& a, const AABB& b){
 			);
 }
 
-inline bool collisionAABB(const Vec2& lt1, const Vec2& wl1, const Vec2& lt2, const Vec2& wl2){
+inline bool collisionAABB(const Vec2f& lt1, const Vec2f& wl1, const Vec2f& lt2, const Vec2f& wl2){
 	return  !( lt1.x > lt2.x + wl2.x
 			|| lt2.x > lt1.x + wl1.x
 			|| lt1.y > lt2.y + wl2.y
@@ -68,7 +68,7 @@ inline bool collisionAABB(const Vec2& lt1, const Vec2& wl1, const Vec2& lt2, con
 			);
 }
 
-inline bool collisionCircle(const Vec2& pos1, float32 rad1, const Vec2& pos2, float32 rad2){
+inline bool collisionCircle(const Vec2f& pos1, float32 rad1, const Vec2f& pos2, float32 rad2){
 	auto dist = rad1+rad2;
 	return vec::square_length(pos2-pos1) < dist*dist;
 }
