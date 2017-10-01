@@ -40,10 +40,10 @@ class Application {
 	private:
 		void input();
 
-		AppContext ctx;
-		AppStack stack;
+		AppContext m_ctx;
+		AppStack m_stack;
 
-		int64 micros_since_last_render;
+		int64 m_micros_since_last_render;
 
 };
 

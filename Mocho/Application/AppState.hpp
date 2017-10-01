@@ -24,6 +24,7 @@ class AppState {
 
 		virtual ~AppState();
 
+	public:
 
 		//Update the state
 		//@returns bool stating wether or not to keep updating

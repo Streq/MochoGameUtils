@@ -16,8 +16,7 @@ struct AppSettings{
 	uint64 microseconds_per_step;
 	uint32 steps_per_render;
 
-	uint32 width;
-	uint32 height;
+	Vec2u resolution;
 
 };
 

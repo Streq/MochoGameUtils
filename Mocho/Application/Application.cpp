@@ -21,12 +21,12 @@ void Application::run() {
 	Clock clock;
 	Clock render_clock;
 	int32 steps_since_last_render = 0;
-	while(ctx.window.isOpen()){
+	while(!m_stack.isEmpty()){
 		do{
 			delta_time += clock.restart();
 		}while(
-			ctx.settings.limit_framerate &&
-			delta_time.asMicroseconds() < ctx.settings.microseconds_per_step
+			m_ctx.settings.limit_framerate &&
+			delta_time.asMicroseconds() < m_ctx.settings.microseconds_per_step
 		);
 
 		input();
@@ -34,17 +34,17 @@ void Application::run() {
 		do{
 			//decrement delta_time or set it to 0 depending on frameskip
 			delta_time = std::max
-				( (delta_time-sf::microseconds(ctx.settings.microseconds_per_step))
-					* static_cast<float>(ctx.settings.frameskip)
+				( (delta_time-sf::microseconds(m_ctx.settings.microseconds_per_step))
+					* static_cast<float>(m_ctx.settings.frameskip)
 				, sf::Time::Zero
 				)
 			;
 			update();
 			++steps_since_last_render;
-		}while(delta_time.asMicroseconds() > ctx.settings.microseconds_per_step);
+		}while(delta_time.asMicroseconds() > m_ctx.settings.microseconds_per_step);
 
-		if(steps_since_last_render>= ctx.settings.steps_per_render){
-			micros_since_last_render = render_clock.restart().asMicroseconds();
+		if(steps_since_last_render>= m_ctx.settings.steps_per_render){
+			m_micros_since_last_render = render_clock.restart().asMicroseconds();
 			draw();
 
 		}
@@ -57,31 +57,32 @@ void Application::init
 		, AppSettings settings
 		)
 {
-	this->ctx.settings = settings;
-	stack.setContext(ctx);
-	stack.pushState(std::move(initState));
-
-
+	m_ctx.settings = settings;
+	m_ctx.window.create(sf::VideoMode(600,400),"Platform",sf::Style::Default);
+	m_stack.setContext(m_ctx);
+	m_stack.pushState(std::move(initState));
 }
 
 void Application::input() {
 	sf::Event e;
-	while(ctx.window.pollEvent(e)){
-		stack.input(e);
+	while(m_ctx.window.pollEvent(e)){
+		m_stack.input(e);
 	}
 }
 
 void Application::update() {
-	stack.update();
+	m_stack.update();
 }
 
 void Application::draw() {
-	stack.draw(ctx.window,sf::RenderStates::Default);
+	m_ctx.window.clear();
+	m_stack.draw(m_ctx.window,sf::RenderStates::Default);
+	m_ctx.window.display();
 }
 Application::Application()
-		: micros_since_last_render(0u)
+		: m_micros_since_last_render(0u)
 {
-	stack.setContext(this->ctx);
+	m_stack.setContext(this->m_ctx);
 }
 
 } /* namespace mch */
