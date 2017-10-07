@@ -58,8 +58,9 @@ void Application::init
 		)
 {
 	m_ctx.settings = settings;
-	m_ctx.window.create(sf::VideoMode(600,400),"Platform",sf::Style::Default);
-	m_stack.setContext(m_ctx);
+	m_ctx.window.create(
+			sf::VideoMode(600,400),
+			"Platform",sf::Style::Default);
 	m_stack.pushState(std::move(initState));
 }
 

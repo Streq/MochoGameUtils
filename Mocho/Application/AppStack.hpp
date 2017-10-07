@@ -46,7 +46,6 @@ class AppStack {
 		void clear();
 		StatePtr popState();
 
-
 	private:
 
 		struct Request{Action action; StatePtr state;};

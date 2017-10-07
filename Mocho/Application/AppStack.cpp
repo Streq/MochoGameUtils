@@ -55,13 +55,13 @@ void AppStack::applyChanges() {
 	for(auto& req:m_requests){
 		switch(req.action){
 			case Action::clear:{
-				m_stack.clear();
+				clear();
 			}break;
 			case Action::pop:{
-				m_stack.pop_back();
+				popState();
 			}break;
 			case Action::push:{
-				m_stack.push_back(std::move(req.state));
+				pushState(std::move(req.state));
 			}break;
 		}
 	};
@@ -85,6 +85,7 @@ AppStack::StatePtr AppStack::popState() {
 	m_stack.pop_back();
 	return ret;
 }
+
 
 void AppStack::setContext(AppContext& ctx){
 	this->m_ctx=&ctx;

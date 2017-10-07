@@ -12,7 +12,9 @@
 #include <SFML/Graphics/RenderTarget.hpp>
 
 #include <Mocho/Application/AppStack.hpp>
+#include <Mocho/Application/AppContext.hpp>
 
+#include <iostream>
 
 namespace mch {
 
@@ -57,6 +59,11 @@ const AppContext& AppState::getContext() const{
 
 void mch::AppState::setContext(AppContext& ctx) {
 	this->ctx=&ctx;
+//	std::cout
+//		<< ctx.settings.microseconds_per_step
+//		<< " wow "
+//		<< this->ctx->settings.microseconds_per_step
+//		<< std::endl;
 }
 
 } /* namespace mch */

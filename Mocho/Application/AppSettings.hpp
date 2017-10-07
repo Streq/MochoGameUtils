@@ -7,7 +7,7 @@
 
 #pragma once
 #include "Mocho/definitions.hpp"
-
+#include "Mocho/vec2.hpp"
 namespace mch{
 struct AppSettings{
 	static const AppSettings Default;
