@@ -9,50 +9,62 @@
 #include "vec2.hpp"
 
 namespace mch{
-struct Intersection{
-	bool exists;
-	float t,u;
-};
 
-/* Find an intersection between segments p to (p+r) and q to (q+s).
- * The boolean exists determines whether there's a certain (single)
- * 	point of intersection.
- * You can calculate the exact point of intersection
- *  by multiplying r by t and adding it to p
- *  or by multiplying s by u and adding it to q
- * */
 
-inline Intersection findIntersection
-( const Vec2f& p
-, const Vec2f& r
-, const Vec2f& q
-, const Vec2f& s
-){
-	//t = (q − p) x s / (r x s)
-	//u = (q − p) x r / (r x s)
 
-	//hay interseccion si r x s != 0 and 0 <= t <= 1 and 0 <= u <= 1
 
-	Intersection i;
-	i.exists = false;
-	auto q_min_p = q-p;
-	auto cross_r_s = vec::cross(r,s);
-	if(!cross_r_s)return i;
-	i.t = vec::cross(q_min_p, s) / cross_r_s;
-	i.u = vec::cross(q_min_p, r) / cross_r_s;
-
-	i.exists = 0.f <= i.t && i.t <= 1.f
-			&& 0.f <= i.u && i.u <= 1.f;
-	return i;
-
-}
 
 struct AABB{
 	Vec2f topleft;
 	Vec2f size;
 };
 
-inline bool collisionAABB(const AABB& a, const AABB& b){
+
+namespace collision{
+
+inline bool line_line
+( const Vec2f& a
+, const Vec2f& b
+, const Vec2f& c
+, const Vec2f& d
+, Vec2f& intersection
+){
+	//t = (q − p) x s / (r x s)
+	//u = (q − p) x r / (r x s)
+
+	//hay interseccion si r x s != 0 and 0 <= t <= 1 and 0 <= u <= 1
+	bool exists=false;
+	auto b_minus_a = b-a;
+	auto d_minus_c = c-b;
+	auto c_min_a = c-a;
+	auto cross_r_s = vec::cross(b_minus_a,d);
+	if(!cross_r_s)return false;
+	float t = vec::cross(c_min_a, d_minus_c) / cross_r_s;
+	float u = vec::cross(c_min_a, b_minus_a) / cross_r_s;
+
+	exists =  0.f <= t && t <= 1.f
+		&& 0.f <= u && u <= 1.f;
+	intersection = a+(b_minus_a*t);
+	return exists;
+
+}
+
+/* Find an intersection between segments ab1 and ab2.
+ * @returns wether there's an intersection or not
+*/
+
+inline bool line_line
+( const Vec2f& a
+, const Vec2f& b
+, const Vec2f& c
+, const Vec2f& d
+){
+	Vec2f intersection{};
+	return line_line(a,b,c,d,intersection);
+}
+
+
+inline bool aabb_aabb(const AABB& a, const AABB& b){
 	return  !( a.topleft.x > b.topleft.x + b.size.x
 			|| b.topleft.x > a.topleft.x + a.size.x
 			|| a.topleft.y > b.topleft.y + b.size.y
@@ -60,7 +72,7 @@ inline bool collisionAABB(const AABB& a, const AABB& b){
 			);
 }
 
-inline bool collisionAABB(const Vec2f& lt1, const Vec2f& wl1, const Vec2f& lt2, const Vec2f& wl2){
+inline bool aabb_aabb(const Vec2f& lt1, const Vec2f& wl1, const Vec2f& lt2, const Vec2f& wl2){
 	return  !( lt1.x > lt2.x + wl2.x
 			|| lt2.x > lt1.x + wl1.x
 			|| lt1.y > lt2.y + wl2.y
@@ -68,10 +80,14 @@ inline bool collisionAABB(const Vec2f& lt1, const Vec2f& wl1, const Vec2f& lt2, 
 			);
 }
 
-inline bool collisionCircle(const Vec2f& pos1, float32 rad1, const Vec2f& pos2, float32 rad2){
+inline bool circle_circle(const Vec2f& pos1, float32 rad1, const Vec2f& pos2, float32 rad2){
 	auto dist = rad1+rad2;
 	return vec::square_length(pos2-pos1) < dist*dist;
 }
+
+
+}
+
 
 }
 
