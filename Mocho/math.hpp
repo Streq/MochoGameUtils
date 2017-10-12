@@ -10,6 +10,7 @@
 #include <algorithm>
 #include <functional>
 #include <cassert>
+#include "Mocho/definitions.hpp"
 namespace mch{
 	constexpr float PI = 3.14159265359f;
 
@@ -33,12 +34,13 @@ namespace mch{
 	template<class T, class Compare>
 	constexpr const T& clamp( const T& v, const T& lo, const T& hi, Compare comp ){
 		return assert( !comp(hi, lo) ),
-			comp(v, lo) ? lo : comp(hi, v) ? hi : v;
+		std::min(std::max(v, lo, comp), hi, comp);
 	}
 
 	template<class T>
 	constexpr const T& clamp( const T& v, const T& lo, const T& hi ){
-		return clamp( v, lo, hi, std::less<T>() );
+		return  assert(!(hi<lo)),
+			std::min(std::max(v,lo),hi);
 	}
 
 	template<typename T>
@@ -59,6 +61,12 @@ namespace mch{
 		return approached;
 	}
 
+	//applies the true modulo operation
+	//@returns the distance in units between n
+	// and size's lowest multiple that is higher than n
+	inline uint32 modulo(int32 n, int32 size){
+		return 	((n % size) + size) % size;
+	};
 
 }
 
