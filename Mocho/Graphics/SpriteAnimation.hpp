@@ -10,6 +10,8 @@
 #include "Mocho/vec2.hpp"
 
 #include <SFML/System/Time.hpp>
+#include "Mocho/Graphics/SpriteGallery.hpp"
+
 namespace sf{
 class Texture;
 class Time;
@@ -18,44 +20,22 @@ namespace mch {
 
 class SpriteAnimation {
 	public:
-		enum class Type{
-			Once,
-			Loop,
-			BackAndForth,
-		};
+		void update(sf::Time time);
 
-		SpriteAnimation();
-		SpriteAnimation(const sf::Texture*, Vec2u frameSize, int32 begin=0, int32 end=0);
+		const sf::Sprite& getCurrentFrame()const;
 
-		void update(sf::Time dt);
+		void setSpriteGallery(const SpriteGallery& gallery);
 
-		sf::Time getFrameDuration()const;
+		void setIndex(int n);
+		void resetElapsedTime();
 
-		/*Use negative values in @frames to go backwards*/
-		void setFrameSpeed(sf::Time dt,int frames);
-		void setAnimationType(Type t);
-
-		Type getAnimationType()const;
-
-		sf::Sprite& getSprite();
-		const sf::Sprite& getSprite()const;
-
-
+		void setFrameTime(sf::Time frameTime);
 
 	private:
-		void advanceIndex(int n);
-		void advanceIndex();
-	private:
-		sf::Sprite m_sprite;
-		Vec2u m_frameSize;
-		Type m_type;
-		int32 m_begin;
-		int32 m_frames;
-		int32 m_index;
-		Vec2u m_dimensions;
-		sf::Time m_frameDuration;
-		sf::Time m_elapsedTime;
-		bool m_orientation;
+		const SpriteGallery* m_gallery = nullptr;
+		sf::Time m_elapsed_time = sf::Time::Zero;
+		sf::Time m_frame_time = sf::Time::Zero;
+		int m_current_index = 0;
 };
 
 } /* namespace mch */
