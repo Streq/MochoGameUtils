@@ -91,8 +91,10 @@ struct Script{
 
 		template <typename... Args>
 		struct function{
+
 			template <typename... Ret>
 			static int call(Script& script, const char* name, Args... ArgTypes, Ret&... RetTypes){
+
 				printf("calling function %s, with %u arguments and %u return fields\n"
 						,name, sizeof...(Args), sizeof...(Ret));
 

@@ -22,7 +22,6 @@ class Application {
 		Application();
 
 		//Initializes the Application with the given state on the stack.
-		//init() is then called for all states in the stack.
 		void init(std::unique_ptr<AppState> initState
 				, AppSettings settings = AppSettings::Default);
 
@@ -36,9 +35,10 @@ class Application {
 		void draw();
 
 
+		void input();
+
 
 	private:
-		void input();
 
 		AppContext m_ctx;
 		AppStack m_stack;
