@@ -67,11 +67,13 @@ void Application::init
 void Application::input() {
 	sf::Event e;
 	while(m_ctx.window.pollEvent(e)){
+		m_ctx.keyboard.handle(e);
 		m_stack.input(e);
 	}
 }
 
 void Application::update() {
+	m_ctx.keyboard.update();
 	m_stack.update();
 }
 
@@ -84,6 +86,7 @@ Application::Application()
 		: m_micros_since_last_render(0u)
 {
 	m_stack.setContext(this->m_ctx);
+	m_ctx.keyboard.clear();
 }
 
 } /* namespace mch */
